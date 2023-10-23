@@ -24,7 +24,7 @@ typedef struct ElementoLista
 
 typedef struct Lista
 {
-    ElementoLista inicio;
+    ElementoLista *inicio;
     int quantidade;
 } Lista;
 
