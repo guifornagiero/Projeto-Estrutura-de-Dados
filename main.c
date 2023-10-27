@@ -35,7 +35,8 @@ int menuPrincipal()
     printf("2 - Atendimento\n");
     printf("3 - Pesquisa\n");
     printf("4 - Carregar / Salvar\n");
-    printf("5 - Sobre\n\n");
+    printf("5 - Sobre\n");
+    printf("0 - Sair\n\n");
 
     int escolha = 0;
 
@@ -43,14 +44,53 @@ int menuPrincipal()
     {
         printf("Digite a opcao escolhida: ");
         scanf("%d", &escolha);
-    } while (escolha < 1 || escolha > 5);
+    } while (escolha < 0 || escolha > 6);
 
     return escolha;
 }
 
-void cadastrarNovoPaciente(Lista *lista, Registro paciente)
+void cadastrarNovoPaciente(Lista *lista)
 {
-    ElementoLista *novo = iniciaElementoLista(paciente);
+    char nome[TAMANHO_NOME];
+    int idade;
+    char RG[TAMANHO_RG];
+    char entradaData[12];
+
+    Registro novoPaciente;
+
+    limpaConsole();
+
+    printf("OPCAO 1 - CADASTRAR NOVO PACIENTE\n\n");
+    printf("Nome: ");
+    getchar();
+    fgets(nome, sizeof(nome), stdin);
+    nome[strcspn(nome, "\n")] = '\0';
+    strcpy(novoPaciente.nome, nome);
+
+    printf("Idade: ");
+    scanf("%d", &idade);
+    novoPaciente.idade = idade;
+
+    printf("RG: ");
+    getchar();
+    fgets(RG, sizeof(RG), stdin);
+    RG[strcspn(RG, "\n")] = '\0';
+    strcpy(novoPaciente.RG, RG);
+
+    int dia, mes, ano;
+
+    printf("Digite a data (dd/mm/AAAA): ");
+    fgets(entradaData, sizeof(entradaData), stdin);
+
+    sscanf(entradaData, "%d/%d/%d", &dia, &mes, &ano);
+
+    novoPaciente.entrada.dia = dia;
+    novoPaciente.entrada.mes = mes;
+    novoPaciente.entrada.ano = ano;
+
+    printf("\nUsuario cadastrado -> RG %s\n\n", novoPaciente.RG);
+
+    ElementoLista *novo = iniciaElementoLista(novoPaciente);
 
     if (lista->inicio == NULL)
         lista->inicio = novo;
@@ -67,6 +107,9 @@ void mostrarListaCompleta(Lista *lista)
 {
     ElementoLista *atual = lista->inicio;
 
+    printf("\n-------------------------------------------------------\n");
+    printf("LISTA COMPLETA DE PACIENTES CADASTRADOS NO SISTEMA\n");
+
     while (atual != NULL)
     {
         printf("\nNome -> %s\n", atual->dados.nome);
@@ -75,91 +118,73 @@ void mostrarListaCompleta(Lista *lista)
         printf("Entrada -> %d/%d/%d\n", atual->dados.entrada.dia, atual->dados.entrada.mes, atual->dados.entrada.ano);
         atual = atual->proximo;
     }
-    printf("\nQuantidade -> %d", lista->quantidade);
+    printf("\nQuantidade -> %d\n", lista->quantidade);
+    printf("-------------------------------------------------------\n");
 }
 
 void cadastro(Lista *lista)
 {
     limpaConsole();
 
-    printf("OPCAO 1 - CADASTRO\n\n");
-    printf("1 - Cadastrar novo paciente\n");
-    printf("2 - Consultar paciente cadastrado\n");
-    printf("3 - Mostrar lista completa\n");
-    printf("4 - Atualizar dados de paciente\n");
-    printf("5 - Remover paciente\n\n");
+    int sair = 0;
 
-    int escolha = 0;
-
-    do
+    while (sair != 1)
     {
-        printf("Digite a opcao escolhida: ");
-        scanf("%d", &escolha);
-    } while (escolha < 1 || escolha > 5);
 
-    if (escolha == 1)
-    {
-        char nome[TAMANHO_NOME];
-        int idade;
-        char RG[TAMANHO_RG];
-        char entradaData[12];
+        printf("OPCAO 1 - CADASTRO\n\n");
+        printf("1 - Cadastrar novo paciente\n");
+        printf("2 - Consultar paciente cadastrado\n");
+        printf("3 - Mostrar lista completa\n");
+        printf("4 - Atualizar dados de paciente\n");
+        printf("5 - Remover paciente\n");
+        printf("0 - Sair de cadastro\n\n");
 
-        Registro novoPaciente;
+        int escolha = 0;
 
-        limpaConsole();
+        do
+        {
+            printf("Digite a opcao escolhida: ");
+            scanf("%d", &escolha);
+        } while (escolha < 0 || escolha > 5);
 
-        printf("OPCAO 1 - CADASTRAR NOVO PACIENTE\n\n");
-        printf("Nome: ");
-        getchar();
-        fgets(nome, sizeof(nome), stdin);
-        nome[strcspn(nome, "\n")] = '\0';
-        strcpy(novoPaciente.nome, nome);
+        if (escolha == 1)
+        {
+            cadastrarNovoPaciente(lista);
+        }
 
-        printf("Idade: ");
-        scanf("%d", &idade);
-        novoPaciente.idade = idade;
+        if (escolha == 3)
+        {
+            mostrarListaCompleta(lista);
+            printf("\n");
+        }
 
-        printf("RG: ");
-        getchar();
-        fgets(RG, sizeof(RG), stdin);
-        RG[strcspn(RG, "\n")] = '\0';
-        strcpy(novoPaciente.RG, RG);
-
-        int dia, mes, ano;
-
-        printf("Digite a data (dd/mm/AAAA): ");
-        fgets(entradaData, sizeof(entradaData), stdin);
-
-        sscanf(entradaData, "%d/%d/%d", &dia, &mes, &ano);
-
-        novoPaciente.entrada.dia = dia;
-        novoPaciente.entrada.mes = mes;
-        novoPaciente.entrada.ano = ano;
-
-        cadastrarNovoPaciente(lista, novoPaciente);
-
-        strcpy(novoPaciente.nome, "aaaaa");
-        cadastrarNovoPaciente(lista, novoPaciente);
-
-        strcpy(novoPaciente.nome, "bbbbbbb");
-        cadastrarNovoPaciente(lista, novoPaciente);
-
-        mostrarListaCompleta(lista);
+        if (escolha == 0)
+            sair = 1;
     }
 }
 
 int main()
 {
+    int sair = 0;
+
     Lista *lista = iniciaLista();
 
-    int escolha = menuPrincipal();
-
-    switch (escolha)
+    while (sair != 1)
     {
-    case 1:
-        cadastro(lista);
-        break;
+        int escolha = menuPrincipal();
+
+        switch (escolha)
+        {
+        case 1:
+            cadastro(lista);
+            break;
+        case 0:
+            sair = 1;
+            break;
+        };
     }
+
+    printf("\nObrigado por utilizar o aplicativo!!\n\n");
 
     return 0;
 }

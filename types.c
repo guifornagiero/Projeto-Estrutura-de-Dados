@@ -1,5 +1,5 @@
 #define TAMANHO_NOME 100
-#define TAMANHO_RG 9
+#define TAMANHO_RG 15
 
 typedef struct Data
 {
