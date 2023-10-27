@@ -103,6 +103,22 @@ void cadastrarNovoPaciente(Lista *lista)
     lista->quantidade++;
 }
 
+ElementoLista *consultarPacienteCadastrado(Lista *lista, char *RG)
+{
+    ElementoLista *atual = lista->inicio;
+
+    while (atual != NULL)
+    {
+        if (strcmp(atual->dados.RG, RG) == 0)
+        {
+            return atual;
+        }
+        atual = atual->proximo;
+    }
+
+    return NULL;
+}
+
 void mostrarListaCompleta(Lista *lista)
 {
     ElementoLista *atual = lista->inicio;
@@ -119,7 +135,7 @@ void mostrarListaCompleta(Lista *lista)
         atual = atual->proximo;
     }
     printf("\nQuantidade -> %d\n", lista->quantidade);
-    printf("-------------------------------------------------------\n");
+    printf("-------------------------------------------------------\n\n");
 }
 
 void cadastro(Lista *lista)
@@ -148,15 +164,33 @@ void cadastro(Lista *lista)
         } while (escolha < 0 || escolha > 5);
 
         if (escolha == 1)
-        {
             cadastrarNovoPaciente(lista);
+
+        if (escolha == 2)
+        {
+            limpaConsole();
+
+            char RG[TAMANHO_RG];
+
+            printf("Digite o RG do paciente: ");
+            scanf("%s", RG);
+
+            ElementoLista *paciente = consultarPacienteCadastrado(lista, RG);
+
+            if (paciente != NULL)
+            {
+                printf("\n-PACIENTE ENCONTRADO-\n");
+                printf("Nome: %s\n", paciente->dados.nome);
+                printf("RG: %s\n\n", paciente->dados.RG);
+            }
+            else
+            {
+                printf("\nPaciente com RG %s nao encontrado.\n\n", RG);
+            }
         }
 
         if (escolha == 3)
-        {
             mostrarListaCompleta(lista);
-            printf("\n");
-        }
 
         if (escolha == 0)
             sair = 1;
