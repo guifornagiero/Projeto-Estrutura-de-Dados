@@ -49,8 +49,7 @@ int menuPrincipal()
     return escolha;
 }
 
-// REGION - CADASTRO (OPCAO 1)
-#pragma region CADASTRO
+#pragma region CADASTRO (OPCAO 1)
 void cadastrarNovoPaciente(Lista *lista)
 {
     char nome[TAMANHO_NOME];
@@ -168,6 +167,61 @@ void mostrarListaCompleta(Lista *lista)
 
 void atualizarDadosPaciente(Lista *lista)
 {
+    limpaConsole();
+
+    char RG[TAMANHO_RG];
+
+    printf("Digite o RG do paciente: ");
+    scanf("%s", RG);
+
+    ElementoLista *paciente = buscaPacientePorRG(lista, RG);
+
+    if (paciente == NULL)
+        printf("\nPaciente com RG %s nao encontrado.\n\n", RG);
+    else
+    {
+        printf("\n-PACIENTE ENCONTRADO-\n");
+        printf("Nome: %s\n", paciente->dados.nome);
+        printf("Idade -> %d\n", paciente->dados.idade);
+        printf("RG: %s\n", paciente->dados.RG);
+        printf("Entrada -> %d/%d/%d\n\n", paciente->dados.entrada.dia, paciente->dados.entrada.mes, paciente->dados.entrada.ano);
+
+        char nome[TAMANHO_NOME];
+        int idade;
+        char RG[TAMANHO_RG];
+        char entradaData[12];
+
+        printf("ALTERE OS DADOS DO USUARIO:\n");
+
+        printf("Nome: ");
+        getchar();
+        fgets(nome, sizeof(nome), stdin);
+        nome[strcspn(nome, "\n")] = '\0';
+        strcpy(paciente->dados.nome, nome);
+
+        printf("Idade: ");
+        scanf("%d", &idade);
+        paciente->dados.idade = idade;
+
+        printf("RG: ");
+        getchar();
+        fgets(RG, sizeof(RG), stdin);
+        RG[strcspn(RG, "\n")] = '\0';
+        strcpy(paciente->dados.RG, RG);
+
+        int dia, mes, ano;
+
+        printf("Digite a data (dd/mm/AAAA): ");
+        fgets(entradaData, sizeof(entradaData), stdin);
+
+        sscanf(entradaData, "%d/%d/%d", &dia, &mes, &ano);
+
+        paciente->dados.entrada.dia = dia;
+        paciente->dados.entrada.mes = mes;
+        paciente->dados.entrada.ano = ano;
+
+        printf("\nUsuario alterado com sucesso!\n\n");
+    }
 }
 
 void removerPaciente(Lista *lista)
@@ -211,7 +265,6 @@ void removerPaciente(Lista *lista)
 }
 
 #pragma endregion
-// ENDREGION - CADASTRO (OPCAO 1)
 
 void cadastro(Lista *lista)
 {
@@ -240,19 +293,14 @@ void cadastro(Lista *lista)
 
         if (escolha == 1)
             cadastrarNovoPaciente(lista);
-
         if (escolha == 2)
             consultarPacienteCadastrado(lista);
-
         if (escolha == 3)
             mostrarListaCompleta(lista);
         if (escolha == 4)
-        {
-        }
-
+            atualizarDadosPaciente(lista);
         if (escolha == 5)
             removerPaciente(lista);
-
         if (escolha == 0)
             sair = 1;
     }
