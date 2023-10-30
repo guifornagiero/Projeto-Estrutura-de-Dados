@@ -49,6 +49,8 @@ int menuPrincipal()
     return escolha;
 }
 
+// REGION - CADASTRO (OPCAO 1)
+#pragma region CADASTRO
 void cadastrarNovoPaciente(Lista *lista)
 {
     char nome[TAMANHO_NOME];
@@ -103,7 +105,7 @@ void cadastrarNovoPaciente(Lista *lista)
     lista->quantidade++;
 }
 
-ElementoLista *consultarPacienteCadastrado(Lista *lista, char *RG)
+ElementoLista *buscaPacientePorRG(Lista *lista, char *RG)
 {
     ElementoLista *atual = lista->inicio;
 
@@ -119,11 +121,37 @@ ElementoLista *consultarPacienteCadastrado(Lista *lista, char *RG)
     return NULL;
 }
 
+void consultarPacienteCadastrado(Lista *lista)
+{
+    limpaConsole();
+
+    char RG[TAMANHO_RG];
+
+    printf("Digite o RG do paciente: ");
+    scanf("%s", RG);
+
+    ElementoLista *paciente = buscaPacientePorRG(lista, RG);
+
+    if (paciente != NULL)
+    {
+        printf("\n-PACIENTE ENCONTRADO-\n");
+        printf("Nome: %s\n", paciente->dados.nome);
+        printf("Idade -> %d\n", paciente->dados.idade);
+        printf("RG: %s\n", paciente->dados.RG);
+        printf("Entrada -> %d/%d/%d\n\n", paciente->dados.entrada.dia, paciente->dados.entrada.mes, paciente->dados.entrada.ano);
+    }
+    else
+    {
+        printf("\nPaciente com RG %s nao encontrado.\n\n", RG);
+    }
+}
+
 void mostrarListaCompleta(Lista *lista)
 {
+    limpaConsole();
+
     ElementoLista *atual = lista->inicio;
 
-    printf("\n-------------------------------------------------------\n");
     printf("LISTA COMPLETA DE PACIENTES CADASTRADOS NO SISTEMA\n");
 
     while (atual != NULL)
@@ -137,6 +165,53 @@ void mostrarListaCompleta(Lista *lista)
     printf("\nQuantidade -> %d\n", lista->quantidade);
     printf("-------------------------------------------------------\n\n");
 }
+
+void atualizarDadosPaciente(Lista *lista)
+{
+}
+
+void removerPaciente(Lista *lista)
+{
+    limpaConsole();
+
+    char RG[TAMANHO_RG];
+
+    printf("Digite o RG do paciente que deseja remover: ");
+    scanf("%s", RG);
+
+    ElementoLista *atual = lista->inicio;
+    ElementoLista *anterior = NULL;
+
+    while (atual != NULL && strcmp(atual->dados.RG, RG) != 0)
+    {
+        anterior = atual;
+        atual = atual->proximo;
+    }
+
+    if (atual != NULL)
+    {
+        if (anterior == NULL && atual->proximo == NULL)
+            lista->inicio = NULL;
+        else if (anterior == NULL && atual->proximo != NULL)
+            lista->inicio = atual->proximo;
+        else if (anterior != NULL && atual->proximo == NULL)
+            anterior->proximo = NULL;
+        else if (anterior != NULL && atual->proximo != NULL)
+            anterior->proximo = atual->proximo;
+
+        free(atual);
+        lista->quantidade--;
+
+        printf("\nPaciente com RG %s removido.\n\n", RG);
+    }
+    else
+    {
+        printf("\nPaciente com RG %s nao encontrado.\n\n", RG);
+    }
+}
+
+#pragma endregion
+// ENDREGION - CADASTRO (OPCAO 1)
 
 void cadastro(Lista *lista)
 {
@@ -167,30 +242,16 @@ void cadastro(Lista *lista)
             cadastrarNovoPaciente(lista);
 
         if (escolha == 2)
-        {
-            limpaConsole();
-
-            char RG[TAMANHO_RG];
-
-            printf("Digite o RG do paciente: ");
-            scanf("%s", RG);
-
-            ElementoLista *paciente = consultarPacienteCadastrado(lista, RG);
-
-            if (paciente != NULL)
-            {
-                printf("\n-PACIENTE ENCONTRADO-\n");
-                printf("Nome: %s\n", paciente->dados.nome);
-                printf("RG: %s\n\n", paciente->dados.RG);
-            }
-            else
-            {
-                printf("\nPaciente com RG %s nao encontrado.\n\n", RG);
-            }
-        }
+            consultarPacienteCadastrado(lista);
 
         if (escolha == 3)
             mostrarListaCompleta(lista);
+        if (escolha == 4)
+        {
+        }
+
+        if (escolha == 5)
+            removerPaciente(lista);
 
         if (escolha == 0)
             sair = 1;
@@ -205,6 +266,8 @@ int main()
 
     while (sair != 1)
     {
+        limpaConsole();
+
         int escolha = menuPrincipal();
 
         switch (escolha)
