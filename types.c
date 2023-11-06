@@ -32,12 +32,13 @@ typedef struct ElementoFila
 {
     Registro dados;
     struct ElementoFila *proximo;
+    struct ElementoFila *anterior;
 } ElementoFila;
 
 typedef struct Fila
 {
-    ElementoFila head;
-    ElementoFila tail;
+    ElementoFila *head;
+    ElementoFila *tail;
     int quantidade;
 } Fila;
 
