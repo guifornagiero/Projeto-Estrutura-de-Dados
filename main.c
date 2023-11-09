@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "types.c"
 
+#pragma region HELPERS
+
 void limpaConsole()
 {
     system("cls");
@@ -84,6 +86,8 @@ int menuPrincipal()
 
     return escolha;
 }
+
+#pragma endregion HELPERS
 
 #pragma region CADASTRO (OPCAO 1)
 
@@ -456,6 +460,96 @@ void atendimento(Lista *lista, Fila *fila)
 
 #pragma endregion
 
+#pragma region PESQUISA (OPCAO 3)
+
+void ordenarAno()
+{
+}
+
+void ordenarMes() {}
+
+void ordenarDia() {}
+
+void ordenarIdade() {}
+
+void pesquisa()
+{
+    limpaConsole();
+
+    int sair = 0;
+
+    while (sair != 1)
+    {
+        printf("OPCAO 3 - PESQUISA\n\n");
+        printf("1 - Ordenar por ano de registro\n");
+        printf("2 - Ordenar por mes de registro\n");
+        printf("3 - Ordenar por dia de registro\n");
+        printf("4 - Ordenar por idades\n");
+        printf("0 - Sair de pesquisa\n\n");
+
+        int escolha = 0;
+
+        do
+        {
+            printf("Digite a opcao escolhida: ");
+            scanf("%d", &escolha);
+        } while (escolha < 0 || escolha > 4);
+
+        switch (escolha)
+        {
+        case 1:
+            ordenarAno();
+            break;
+        case 2:
+            ordenarMes();
+            break;
+        case 3:
+            ordenarDia();
+            break;
+        case 4:
+            ordenarIdade();
+            break;
+        case 0:
+            sair = 1;
+            break;
+        }
+    }
+}
+
+#pragma endregion PESQUISA(OPCAO 3)
+
+#pragma region SOBRE (OPCAO 5)
+
+void sobre()
+{
+    limpaConsole();
+
+    printf("SOBRE O PROJETO\n\n");
+
+    printf("- DESENVOLVEDORES -\n");
+    printf("Guilherme Fornagiero de Carvalho - RA 22.122.016-3\n");
+    printf("Marcio Forner Nepomuceno Almeida - RA 22.122.040-3\n\n");
+
+    printf("4 ciclo - Ciencia da Computacao\n");
+    printf("CC4652 - Estrutura de Dados\n");
+    printf("Profs. Luciano Rossi e Leonardo Anjoletto\n\n");
+
+    printf("17/11/2023\n");
+    printf("Centro Educacional FEI\n\n");
+
+    printf("-------------------------------------------------------\n\n");
+
+    int sair = 1;
+
+    while (sair != 0)
+    {
+        printf("Digite 0 para sair de SOBRE: ");
+        scanf("%d", &sair);
+    }
+}
+
+#pragma endregion SOBRE(OPCAO 5)
+
 int main()
 {
     int sair = 0;
@@ -476,6 +570,9 @@ int main()
             break;
         case 2:
             atendimento(lista, fila);
+            break;
+        case 5:
+            sobre();
             break;
         case 0:
             sair = 1;
