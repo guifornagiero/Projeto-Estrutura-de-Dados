@@ -91,6 +91,19 @@ int menuPrincipal()
 
 #pragma region CADASTRO (OPCAO 1)
 
+void cadastrarNaLista(Lista *lista, ElementoLista *elemento)
+{
+    if (lista->inicio == NULL)
+        lista->inicio = elemento;
+    else
+    {
+        elemento->proximo = lista->inicio;
+        lista->inicio = elemento;
+    }
+
+    lista->quantidade++;
+}
+
 void cadastrarNovoPaciente(Lista *lista)
 {
     char nome[TAMANHO_NOME];
@@ -134,15 +147,7 @@ void cadastrarNovoPaciente(Lista *lista)
 
     ElementoLista *novo = iniciaElementoLista(novoPaciente);
 
-    if (lista->inicio == NULL)
-        lista->inicio = novo;
-    else
-    {
-        novo->proximo = lista->inicio;
-        lista->inicio = novo;
-    }
-
-    lista->quantidade++;
+    cadastrarNaLista(lista, novo);
 }
 
 void consultarPacienteCadastrado(Lista *lista)
@@ -333,8 +338,6 @@ void cadastro(Lista *lista)
         case 0:
             sair = 1;
             break;
-        default:
-            break;
         }
     }
 }
@@ -518,6 +521,104 @@ void pesquisa()
 
 #pragma endregion PESQUISA(OPCAO 3)
 
+#pragma region CARREGAR SALVAR (OPCAO 4)
+
+void carregar(Lista *lista)
+{
+    FILE *arquivo;
+
+    arquivo = fopen("arquivo.txt", "r");
+    char linha[100];
+
+    if (arquivo == NULL)
+    {
+        printf("Erro ao carregar arquivo!\n");
+        return;
+    }
+
+    while (fgets(linha, 100, arquivo))
+    {
+        Registro dados;
+
+        sscanf(linha, "%s %d %s %d %d %d", dados.nome, &dados.idade, dados.RG, &dados.entrada.dia, &dados.entrada.mes, &dados.entrada.ano);
+
+        ElementoLista *novo = iniciaElementoLista(dados);
+        cadastrarNaLista(lista, novo);
+    }
+
+    printf("\nLista de pacientes carregada com sucesso!\n\n");
+
+    int saida;
+    printf("Digite 0 para sair... ");
+    scanf("%d", &saida);
+
+    fclose(arquivo);
+}
+
+void salvar(Lista *lista)
+{
+    FILE *arquivo;
+
+    arquivo = fopen("arquivo.txt", "w");
+
+    if (arquivo == NULL)
+    {
+        printf("Erro ao salvar o arquivo!\n");
+        return;
+    }
+
+    ElementoLista *atual = lista->inicio;
+
+    while (atual != NULL)
+    {
+        fprintf(arquivo, "%s %d %s %02d %02d %04d\n", atual->dados.nome, atual->dados.idade, atual->dados.RG, atual->dados.entrada.dia, atual->dados.entrada.mes, atual->dados.entrada.ano);
+        atual = atual->proximo;
+    }
+
+    printf("\nLista de pacientes salva com sucesso no arquivo!\n");
+
+    fclose(arquivo);
+
+    int saida;
+    printf("Digite 0 para sair... ");
+    scanf("%d", &saida);
+}
+
+void carregarSalvar(Lista *lista)
+{
+    limpaConsole();
+
+    int sair = 0;
+
+    printf("OPCAO 4 - CARREGAR/SALVAR\n\n");
+    printf("1 - Carregar arquivo\n");
+    printf("2 - Salvar lista de pacientes\n");
+    printf("0 - Sair de carregar/salvar\n\n");
+
+    int escolha = 0;
+
+    do
+    {
+        printf("Digite a opcao escolhida: ");
+        scanf("%d", &escolha);
+    } while (escolha < 0 || escolha > 2);
+
+    switch (escolha)
+    {
+    case 1:
+        carregar(lista);
+        break;
+    case 2:
+        salvar(lista);
+        break;
+    case 0:
+        sair = 1;
+        break;
+    }
+}
+
+#pragma endregion CARREGAR SALVAR(OPCAO 4)
+
 #pragma region SOBRE (OPCAO 5)
 
 void sobre()
@@ -570,6 +671,9 @@ int main()
             break;
         case 2:
             atendimento(lista, fila);
+            break;
+        case 4:
+            carregarSalvar(lista);
             break;
         case 5:
             sobre();
