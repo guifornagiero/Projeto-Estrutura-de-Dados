@@ -662,6 +662,8 @@ int main()
     {
         limpaConsole();
 
+        printf("teste");
+
         int escolha = menuPrincipal();
 
         switch (escolha)
